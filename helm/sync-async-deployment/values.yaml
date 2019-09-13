@@ -32,11 +32,13 @@ wso2:
     username: ""
     password: ""
   deployment:
+    # Image pull secret for TWG registry
+    imagePullSecretName: ""
     wso2ei:
-      imageName: "wso2ei-integrator"
+      imageName: "wso2/wso2ei-integrator"
       imageTag: "6.5.0"
       # Number of deployment replicas
-      replicas: 1
+      replicas: 2
       # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
       minReadySeconds: 75
       strategy:
@@ -72,9 +74,9 @@ wso2:
           cpu: "2000m"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
-
-    wso2ei2:
-      imageName: "wso2ei-integrator"
+    #Configurations of the async deployment
+    wso2eiAsync:
+      imageName: "wso2/wso2ei-integrator"
       imageTag: "6.5.0"
       # Number of deployment replicas
       replicas: 1

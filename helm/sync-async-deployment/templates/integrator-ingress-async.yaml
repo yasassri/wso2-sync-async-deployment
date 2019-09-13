@@ -26,9 +26,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ .Release.Name }}-integrator
+    - {{ .Release.Name }}-integrator-async
   rules:
-  - host: {{ .Release.Name }}-integrator
+  - host: {{ .Release.Name }}-integrator-async
     http:
       paths:
       - path: /

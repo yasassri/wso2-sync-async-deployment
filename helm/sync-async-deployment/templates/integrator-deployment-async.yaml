@@ -18,12 +18,12 @@ metadata:
   name: {{ template "fullname" . }}-integrator-deployment-2
   namespace : {{ .Release.Namespace }}
 spec:
-  replicas:  {{ default 1 .Values.wso2.deployment.wso2ei2.replicas }}
-  minReadySeconds: {{ default 75 .Values.wso2.deployment.wso2ei2.minReadySeconds }}
+  replicas:  {{ default 1 .Values.wso2.deployment.wso2ei.replicas }}
+  minReadySeconds: {{ default 75 .Values.wso2.deployment.wso2ei.minReadySeconds }}
   strategy:
     rollingUpdate:
-      maxSurge: {{ default 1 .Values.wso2.deployment.wso2ei2.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2ei2.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ default 1 .Values.wso2.deployment.wso2ei.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2ei.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
   selector:
     matchLabels:
@@ -51,14 +51,6 @@ spec:
             - name: shared-prometheus-jmx-jar
               mountPath: /jmx-jar
         {{ end }}
-        {{ if .Values.wso2.mysql.enabled }}
-        - name: init-is-db
-          image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z {{ default "wso2ei-rdbms-service-mysql" .Values.wso2.mysql.host }} 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
-        {{ end }}
-        - name: init-ei-analytics
-          image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of Analytics profile of WSO2 Enterprise Integrator deployment"; while ! nc -z {{ template "fullname" . }}-analytics-worker-service-1 7712 && ! nc -z {{ template "fullname" . }}-analytics-worker-service-2 7712; do sleep 1; printf "-"; done; echo -e "  >> Analytics profile of WSO2 Enterprise Integrator has started";']
         {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: init-logstash-plugins-install
           image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
@@ -77,15 +69,7 @@ spec:
       {{ end }}
       containers:
       - name: wso2ei-integrator
-        {{ if .Values.wso2.deployment.wso2ei.dockerRegistry }}
-        image: {{ .Values.wso2.deployment.wso2ei.dockerRegistry }}/{{ default "wso2ei-integrator" .Values.wso2.deployment.wso2ei.imageName }}
-        {{- $tag := .Values.wso2.deployment.wso2ei.imageTag }}
-        {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
-        {{ else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-        image: wso2/{{ default "wso2ei-integrator" .Values.wso2.deployment.wso2ei.imageName }}:{{ .Values.wso2.deployment.wso2ei.imageTag }}
-        {{ else }}
-        image: docker.wso2.com/{{ default "wso2ei-integrator" .Values.wso2.deployment.wso2ei.imageName }}:{{ .Values.wso2.deployment.wso2ei.imageTag }}
-        {{ end }}
+        image: {{ default "wso2ei-integrator" .Values.wso2.deployment.wso2ei.imageName }}:{{ default "6.5.0" .Values.wso2.deployment.wso2ei.imageTag }}
         livenessProbe:
           exec:
             command:
@@ -193,12 +177,9 @@ spec:
             value: {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
       {{ end }}
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
-      {{- if .Values.wso2.deployment.wso2ei.imagePullSecrets }}
+      {{- if .Values.wso2.deployment.imagePullSecretName }}
       imagePullSecrets:
-      - name: {{ .Values.wso2.deployment.wso2ei.imagePullSecrets }}
-      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
-      imagePullSecrets:
-      - name: wso2ei-deployment-creds
+      - name: {{ .Values.wso2.deployment.imagePullSecretName }}
       {{- end }}
       volumes:
       - name: integrator-conf

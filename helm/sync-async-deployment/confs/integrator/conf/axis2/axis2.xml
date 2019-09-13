@@ -407,7 +407,7 @@
      corresponding to the "class" attribute of the "clustering" element. It is also responsible for
      getting this node to join the cluster.
      -->
-  <clustering class="org.wso2.carbon.core.clustering.hazelcast.HazelcastClusteringAgent" enable="true">
+  <clustering class="org.wso2.carbon.core.clustering.hazelcast.HazelcastClusteringAgent" enable="false">
     <!-- Parameter to differentiate clustering mode, Default value will be "nonWorkerManager" in which
          case the all nodes of the cluster run schedule tasks-->
     <parameter name="clusteringPattern">nonWorkerManager</parameter>
