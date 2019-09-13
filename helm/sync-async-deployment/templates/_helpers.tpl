@@ -45,5 +45,5 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{- define "fullname" -}}
-{{- "wso2ei-pattern-1" }}
+{{- "wso2ei-twg" }}
 {{- end -}}
