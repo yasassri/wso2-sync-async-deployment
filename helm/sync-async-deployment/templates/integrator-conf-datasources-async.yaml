@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: integrator-conf-datasources
+  name: integrator-conf-datasources-async
   namespace : {{ .Release.Namespace }}
 data:
   {{- $config_dburl := printf "%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":3306/WSO2EI_REG_DB_ASYNC?autoReconnect=true&amp;useSSL=false" }}

@@ -190,7 +190,7 @@ spec:
           name: integrator-conf-axis2
       - name: integrator-conf-datasources
         configMap:
-          name: integrator-conf-datasources
+          name: integrator-conf-datasources-async
       - name: integrator-conf-entrypoint
         configMap:
           name: integrator-conf-entrypoint
